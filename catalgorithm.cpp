@@ -1,4 +1,4 @@
-#include "catalgorithm.h"
+﻿#include "catalgorithm.h"
 #include "helper.h"
 #include <math.h>
 #include <iostream>
@@ -90,13 +90,24 @@ int CatAlgorithm::NormalMode(int catPos, QList<int>& list, NormalDirMode dm)
 // 1. 当cat 到达某个点时，该点至少含有两条路径
 // 2. 无论玩家如何操作，该路径总能保证条件 1 成立
 // 3. 终点与两个可出边界相邻
+
+// catPos:cat当前位置
+// list：障碍物节点
 int CatAlgorithm::HardMode(int catPos, QList<int>& list)
 {
     PathStruct* ps = new PathStruct();
-    m_helper.data()->initPathStruct(ps, catPos, list);
-    int dir = m_helper.data()->findVictoryPath(ps, list);
+    bool gameContinue = m_helper.data()->initPathStruct(ps, catPos, list);
+    int dir = 0;
+    if (gameContinue)
+    {
+       dir = m_helper.data()->findVictoryPath(ps, list);
+    }
     delete ps;
 
+    if (!gameContinue) // 神经猫被围住。
+    {
+        return dir;
+    }
     if ( dir == nullInit )
         return NormalMode(catPos, list, DirRandom);
     else

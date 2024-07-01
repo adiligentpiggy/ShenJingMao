@@ -1,4 +1,4 @@
-#ifndef PATHSTRUCT_H
+﻿#ifndef PATHSTRUCT_H
 #define PATHSTRUCT_H
 
 #include <QVector>
@@ -23,6 +23,8 @@ struct TreeNode {
 };
 
 struct PathStruct {
+    // 我们使用一个多叉树的结构来存储神经猫的路径，为了保证节点不会反向跳到自己的祖辈造成无限循环，
+    // 这里按层次遍历方式建树，并用 QHash 存储祖辈及其所在层数。
     QHash<int, int> m_Hash;
     TreeNode *m_Node;
 

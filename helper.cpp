@@ -1,11 +1,12 @@
-#include "helper.h"
+﻿#include "helper.h"
 #include <iostream>
 #include <QQueue>
 
 bool Helper::initPathStruct(PathStruct* ps, int catPos, QList<int>& list)
 {
+    bool ret = false;
     if ( ps == NULL || list.size() == 0 )
-        return false;
+        return ret;
 
     ps->m_Node = new TreeNode(catPos, 0);
     ps->m_Hash.insert(catPos, 0);
@@ -44,21 +45,27 @@ bool Helper::initPathStruct(PathStruct* ps, int catPos, QList<int>& list)
         }
     }
 
-//    que.enqueue(ps->m_Node);
-//    while( !que.empty() )
-//    {
-//        TreeNode* node = que.dequeue();
-//        std::cout << "parent is : " << node->val << " " << node->depth << ";";
-//        std::cout << "child is : ";
-//        for ( int i = 0; i < node->childList.size(); ++i )
-//        {
-//            que.enqueue(node->childList.at(i));
-//            std::cout << node->childList.at(i)->val << " " << node->depth << ";";
-//        }
-//        std::cout << std::endl;
-//    }
-//    qDebug() << ps->m_Hash;
-    return true;
+    // 遍历所有路径节点，查看是否有边界节点，如果没有则认为游戏结束。
+    que.enqueue(ps->m_Node);
+    while( !que.empty() )
+    {
+        TreeNode* node = que.dequeue();
+        if ( isBorder(node->val) )
+        {
+            ret = true;
+            break;
+        }
+        //std::cout << "parent is : " << node->val << " " << node->depth << ";";
+        //std::cout << "child is : ";
+        for ( int i = 0; i < node->childList.size(); ++i )
+        {
+            que.enqueue(node->childList.at(i));
+            //std::cout << node->childList.at(i)->val << " " << node->depth << ";";
+        }
+        //std::cout << std::endl;
+    }
+    //qDebug() << ps->m_Hash;
+    return ret;
 }
 
 int Helper::findVictoryPath(PathStruct* ps, QList<int>& list)
@@ -176,6 +183,7 @@ QList<int> Helper::depthFirstSearch(TreeNode* root, QList<int>& list)
 void Helper::appendChildren(TreeNode* node, QHash<int, int>& hash, QList<int>& list, int floor)
 {
     QVector<int> around = getNeighbor(node->val);
+    // 边界节点
     if (around.size() < 6)
         return;
 
@@ -188,6 +196,7 @@ void Helper::appendChildren(TreeNode* node, QHash<int, int>& hash, QList<int>& l
     }
 }
 
+// 是否为边界。判断依据节点的索引值。
 bool Helper::isBorder(int pos)
 {
     if ( pos < c_dimen || pos > c_dimen*(c_dimen-1) || pos % c_dimen == 0 || ( pos + 1 ) % c_dimen == 0 )

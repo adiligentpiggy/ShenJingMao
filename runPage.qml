@@ -8,8 +8,8 @@ Image {
     height: 640
 
     property int steps
-    property int catIndex: 40
-    property var activeRoundArray: []
+    property int catIndex: 40         // 猫的位置索引
+    property var activeRoundArray: [] // 障碍节点
     property var allRoundEntityArray: []
     property int diameter: container.width / 12
     property int stepLen: container.width / 10
